@@ -374,6 +374,8 @@ class Model:
         sims['W'] = self.Wgrid[sims['ixW']]
         sims['D1'] = self.Dgrid[sims['ixD1']]
         sims['W1'] = self.Wgrid[sims['ixW1']]
+        sims['e'] = sims['D1'] - (1.0 - self.delta)*sims['D']
+        sims['c'] = sims['W'] + sims['y'] - (sims['W1']/self.R) - sims['p']*sims['e']
 
         return sims
 
