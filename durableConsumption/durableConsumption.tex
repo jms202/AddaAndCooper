@@ -1,0 +1,165 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\title{Code to solve durable consumption problems using dynamic programming}
+\author{Jonathan Shaw}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+\section{Mankiw's durable consumption model}
+
+\citet{mankiw1982hall} studies durable expenditures when the utility function is separable and quadratic, concluding that durables goods purchases follows an ARMA(1,1) process. We will prove this here.
+
+We start with a value function slightly simplified from the one set out in Section 7.2 of \citet{adda2003dynamic}:
+%
+\begin{equation}
+	V(A, D, y) = \max_{A', D'} \left\{ u(c, D') + \beta EV(A', D', y') \right\}
+\end{equation}
+%
+where \(A\) is wealth, \(D\) is the stock of the durable good, \(y\) is income, \(c\) is consumption and primes indicate the next period. Notice that there is no time to acquire durables---the level of durables chosen today enters utility today.
+
+There are two transition equations for this problem. The first is the accumulation equation for wealth:
+%
+\begin{equation}
+	A' = R(A + y - c - pe)
+\end{equation}
+%
+where \(e\) is the purchase of durable goods at a relative price \(p\), assumed constant. The second transition equation is the one for durables:
+%
+\begin{equation}
+	D' = (1 - \delta)D + e \label{eqn:evoD}
+\end{equation}
+%
+where \(\delta\) is the depreciation rate of durables.
+
+The first order conditions are:
+%
+\begin{align}
+ u_c(c, D') &= \beta R E \left[u_c(c', D'')\right] \label{eqn:EEc} \\
+ p u_c(c, D') &= u_D(c, D') + \beta(1 - \delta) p E \left[u_c(c', D'')\right]
+\end{align}
+%
+Substituting the former into the latter gives:
+%
+\begin{equation}
+	p[R - (1 - \delta)] u_c(c, D') = R u_D(c, D')
+\end{equation}
+%
+Substituting this back into (\ref{eqn:EEc}) gives:
+%
+\begin{equation}
+ u_D(c, D') = \beta R E \left[u_D(c', D'')\right] \label{eqn:EED}
+\end{equation}
+%
+Now suppose that the utility function is separable and quadratic:
+%
+\begin{equation}
+ u(c, D') = -\frac{1}{2}(\overline{c} - c)^2 - \frac{a}{2}(\overline{D} - D)^2
+\end{equation}
+%
+Using this, we can re-write (\ref{eqn:EED}) as:
+%
+\begin{equation}
+ D'' = \frac{\beta R - 1}{\beta R} \overline{D} + \frac{1}{\beta R} D' + \varepsilon' \label{eqn:evoD2}
+\end{equation}
+%
+Advancing (\ref{eqn:evoD}) one period and using it to eliminate \(D''\) gives:
+%
+\begin{equation}
+ e' = \frac{\beta R - 1}{\beta R} \overline{D} + \frac{1 - \beta R (1 - \delta)}{\beta R} D' + \varepsilon' \label{eqn:ed}
+\end{equation}
+%
+Lagging (\ref{eqn:evoD2}) one period and using (\ref{eqn:evoD}) to eliminate \(D\) gives:
+%
+\begin{equation}
+ \frac{1}{\beta R} e = \frac{(\beta R - 1)(1 - \delta)}{\beta R} \overline{D} + \frac{1 - \beta R (1 - \delta)}{\beta R} D' + (1 - \delta)\varepsilon \label{eqn:ed2}
+\end{equation}
+%
+Combining (\ref{eqn:ed}) and (\ref{eqn:ed2}) to eliminate \(D'\) yields our result:
+%
+\begin{equation}
+ e' = \frac{\delta(\beta R - 1)}{\beta R} \overline{D} + \frac{1}{\beta R} e + \varepsilon' + (1 - \delta)\varepsilon
+\end{equation}
+%
+This shows that durable purchases follows an ARMA(1,1) process.
+
+\section{Bernanke's durable consumption model with adjustment costs}
+
+\citet{bernanke1985adjustment} adds adjustment costs to the durable consumption model. This is explained in Section 7.2.3 in \citet{adda2003dynamic}. Here we consider a version with fixed prices. The value function is:
+%
+\begin{equation}
+	V(A, D, y) = \max_{A', D'} \left\{ u(c, D, D') + \beta EV(A', D', y') \right\}
+\end{equation}
+%
+The difference relative to the model without adjustment costs is that the utility function depends on both the current stock of durables and the stock next period: an adjustment from one period to the next is costly. The adjustment cost is part of the utility function rather than the budget constraints for tractability reasons.
+
+The accumulation equation for wealth and the transition equation for the stock of durables is as above.
+
+The first order conditions are:
+%
+\begin{align}
+ u_c(c, D, D') &= \beta R E \left[u_c(c', D', D'')\right] \label{eqn:EEcAdj} \\
+ \begin{split} 
+ p u_c(c, D, D') &= u_{D'}(c, D, D') \\
+ &+ \beta (1 - \delta) p E \left[u_c(c', D', D'') + u_D(c', D', D'')\right]
+ \end{split}
+\end{align}
+%
+Substituting the former into the latter gives:
+%
+\begin{equation}
+ \begin{split} 
+	p[R - (1 - \delta)] u_c(c, D, D') &= R u_{D'}(c, D, D') \\
+	&+ \beta R E \left[u_D(c', D', D'')\right]
+ \end{split}
+\end{equation}
+%
+Substituting this back into (\ref{eqn:EEcAdj}) gives:
+%
+\begin{equation}
+ \begin{split} 
+	u_{D'}(c, D, D') + \beta E \left[u_D(c', D', D'')\right] &= \beta R E \left[ u_{D'}(c', D', D'')\right] \\
+	&+ \beta^2 R E \left[u_D(c'', D'', D''')\right]
+ \end{split}
+\end{equation}
+%
+Now suppose the utility function is given by:
+%
+\begin{equation}
+ u(c, D, D') = -\frac{1}{2}(\overline{c} - c)^2 - \frac{a}{2}(\overline{D} - D)^2  - \frac{d}{2}(D' - D)^2
+\end{equation}
+%
+Then we can rewrite (\ref{eqn:EEcAdj}) as:
+%
+\begin{equation}
+	c' = \frac{\beta R - 1}{\beta R}\overline{c} + \frac{1}{\beta R}c + \varepsilon
+\end{equation}
+%
+Likewise, following similar steps to above and after a host of tedious algebra, we can show that durable expenditures follows an ARMA(3,1):
+%
+\begin{equation}
+	e''' = g_0 + g_1 e'' + g_2 e' + g_3 e + \varepsilon' - (1 - \delta) \varepsilon
+\end{equation}
+%
+where the \(g_j\) are as follows:
+%
+\begin{align}
+	g_0 &= \frac{\delta a(1 - \beta R)}{\beta R d} \overline{D} \\
+	g_1 &= \frac{d + Rd + \beta Ra + \beta Rd}{\beta Rd} \\
+	g_2 &= - \frac{d + \beta a + \beta d + \beta Rd}{\beta^2 R d} \\
+	g_3 &= \frac{1}{\beta^2 R}
+\end{align}
+%
+
+\bibliographystyle{apalike}
+\bibliography{durableConsumption}
+
+\end{document}
+
