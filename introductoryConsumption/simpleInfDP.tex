@@ -1,0 +1,115 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\title{Code to solve infinite-horizon consumption-savings problems using dynamic programming}
+\author{
+        Jonathan Shaw
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This note describes six simple infinite-horizon consumption-savings problems that have been implemented in python using dynamic programming. The code can be found in \href{https://github.com/jms202/simpleInfDP.git}{this} github repository. Please let me know if you find any errors either in this document or in the code itself (see website for contact details).
+
+\section{Continuous non-stochastic problem}
+
+The code in \texttt{certainCake.py} defines a \texttt{Model} class that solves a simple continuous non-stochastic consumption-savings problem similar to the one set out in Section 2.4.1 of \citet{adda2003dynamic}:
+\begin{equation}
+	V(W) = \max_{\underline{W} \leq W' \leq \overline{W}} \left\{ u(c) + \beta V(W') \right\}
+\end{equation}
+subject to the transition equation:
+\begin{equation}
+	W' = R (W + y - c)
+\end{equation}
+where \(W\) is assets, \(c\) is consumption, \(y\) is non-stochastic (constant) income, \(R\) is the interest rate (plus one) and primes indicate the next period. Borrowing is not permitted, and assets must additionally not fall below \(\underline{W}\), which is the lowest asset level that guarantees a minimum level of consumption, \(\underline{c}\), can be achieved in every future period. \(\overline{W}\) is set such that consumption is at least \(\underline{c}\) this period. We assume CRRA utility:
+\begin{equation}
+	u(c) = \frac{c^{1 - \gamma}}{1 - \gamma}
+\end{equation}
+Examples of how to use the code are given in \texttt{eatCertainCake.py}. The solution is found using value function iteration. Depending on the options specified, this is achieved either by solving the Euler equation or by maximising the value function directly. Interpolation is used for values of assets that are off the assets grid.
+
+\section{Continuous non-stochastic problem with no interpolation}
+
+\texttt{certainCakeNoInterp.py} defines a \texttt{Model} class that solves an identical problem to the one described in the previous section. The only difference is that it does not use interpolation for asset values off the grid. The reason for doing this is to allow for an implementation of policy function iteration, discussed in Section 3.2.2 of \citet{adda2003dynamic}. Policy function iteration involves solving a set of linear equations, and---as far as I can tell---this is only possible on the grid.
+
+Forcing choices on the grid can lead to very jagged policy functions (even if the value function looks nice and smooth). This means you need many more grid points to get a reasonable approximation than when interpolation is used. Even then, the policy function is not concave (because of all the jumps).
+
+\texttt{eatCertainCakeNoInterp.py} compares the policy functions and value functions created with and without interpolation.
+
+\section{Continuous IID stochastic problem}
+
+\texttt{iidCake.py} introduces income uncertainty in the form of a two-point discrete distribution with IID transitions. The consumption-savings decision is still continuous. This is the same as the problem described in Section 3.2 of \citet{adda2003dynamic}.
+
+One important feature of this problem is that the recursive formulation is most naturally rewritten so that there is a single cash-in-hand state variable (cash-in-hand is assets plus current-period income). The alternative is to retain assets as a state variable, but then income needs to be added as an additional state variable.
+
+The recursive cash-in-hand formulation is:
+\begin{equation}
+	V(X) = \max_{\underline{c} \leq c \leq \overline{c}} \left\{ u(c) + \beta E_{y'} V(X') \right\}
+\end{equation}
+subject to the transition equation:
+\begin{equation}
+	X' = R (X - c) + y'
+\end{equation}
+and where \(y' \in \{y_L, y_H\}\) and the transition probabilities are given by \(\pi_{i} = \text{Prob}(y' = y_i)\).
+
+The main complication that IID uncertainty introduces is that we have to calculate the expected value function and expected marginal utility. One small additional change is that the constraints on minimum and maximum assets next period need to take into accout that income is now stochastic.
+
+The script \texttt{eatIidCake.py} demonstrates what impact uncertainty has on the policy function.
+
+\section{Continuous Markovian problem}
+
+\texttt{markovCake.py} introduces persistence into the income uncertainty in the form of a two-point discrete distribution with Markov transition probabilities. The consumption-savings decision is still continuous. We now need two state variables: assets and income.
+
+The recursive formulation of the problem is now:
+\begin{equation}
+	V(W, y) = \max_{\underline{W} \leq W' \leq \overline{W}} \left\{ u(c) + \beta E_{y' | y} V(W', y') \right\}
+\end{equation}
+subject to the transition equation:
+\begin{equation}
+	W' = R (W + y - c)
+\end{equation}
+and where \(y \in \{y_L, y_H\}\) and the transition matrix is given by
+\begin{equation}
+	\pi = 
+	\left[
+	\begin{matrix}
+		\pi_{LL} & \pi_{LH} \\
+		\pi_{HL} & \pi_{HH}
+	\end{matrix}
+	\right]
+\end{equation}
+where \(\pi_{ij} = \text{Prob}(y' = y_i | y = y_j)\).
+
+\section{Discrete IID stochastic problem}
+
+In \texttt{iidDiscreteCake.py}, the consumption decision is discrete: either you consume the cake or you don't. It is therefore a form of optimal stopping problem. It is similar to the setup in Section 3.3 of \citet{adda2003dynamic} except that shocks are IID rather than Markovian. Note there is no income and that that uncertainty now is over tastes. Since tastes are IID, we are back to having one state variable: current wealth.
+
+The recursive formulation of the problem is:
+\begin{equation}
+	V(W) = \max \left\{\epsilon u(W), \beta E_{\epsilon'} V(W') \right\}
+\end{equation}
+subject to the transition equation:
+\begin{equation}
+	W' = \rho W
+\end{equation}
+where \(\rho\) represents the depreciation of the cake. We assume that \(\epsilon = \epsilon_i\) with probability \(\pi_i\) where \(i \in \{L, H\}\).
+
+In addition to the usual \texttt{solve} method, this implementation also introduces a simulation method, \texttt{simulate}, and methods to estimate \texttt{rho} (assumed to be the only unknown parameter) by maximum likelihood including bootstrapping standard errors. Maximum likelihood estimation for this sort of model is discussed in Section 4.3.2 of \citet{adda2003dynamic}.
+
+There are a couple of quirks in the discrete case. First, it is important to ensure that utility from consumption is positive. The reason is that we are implicitly assuming that the utility of not consuming is zero, so the individual will never choose to consume if utility from consuming is negative. In the CRRA case we are studying, this means that \(\gamma < 1\). Second, if \(\rho\) is very low, the value function never iterates because it's never optimal to wait.
+
+
+\section{Discrete Markovian problem}
+
+The code in \texttt{markovDiscreteCake.py} implements the same model as that in \texttt{iidDiscreteCake.py} except that taste shocks are now assumed to be Markovian. This is the model described in Section 3.3 of \citet{adda2003dynamic}. Estimation is now by the method of simulated moments (MSM) as described in Section 4.3.3. I don't believe it is possible to use maximum likelihood any more because the optimal policy can no longer be expressed as a simple closed-form threshold rule (though do tell me if I'm wrong!) This seemingly small change causes a host of problems because the MSM objective is discontinuous and a small change in the parameter vector may not change anyone's consumption decision. As a result, the estimation routine should not assume smoothness. Unfortunately, I could not find a more suitable algorithm in scipy so the current routine will not work well. I also haven't implemented the standard error calculations. Help with either of these issues would be appreciated.
+
+\bibliographystyle{apalike}
+\bibliography{simpleInfDP}
+
+\end{document}
+
