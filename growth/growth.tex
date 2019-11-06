@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\title{Code to solve infinite-horizon stochastic growth problems using dynamic programming}
+\author{Jonathan Shaw}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This note describes a number of simple infinite-horizon stochastic growth problems that have been implemented in python using dynamic programming. The code can be found in a github repository [to be specified]. Please let me know if you find any errors either in this document or in the code itself (see website for contact details).
+
+\section{Deterministic growth}
+
+The code in \texttt{deterministicGrowth.py} defines a \texttt{Model} class that solves a simple deterministic growth problem with endogenous labour supply identical to the one set out in Section 5.2 of \citet{adda2003dynamic}:
+\begin{equation}
+	V(k) = \max_{k'} \left\{ u(c) + \beta V(k') \right\}
+\end{equation}
+subject to the capital accumulation equation:
+\begin{equation}
+	k' = f(k) + (1 - \delta)k - c
+\end{equation}
+where \(k\) is capital, \(c\) is consumption and primes indicate the next period. We assume CRRA utility:
+\begin{equation}
+	u(c) = \frac{c^{1 - \gamma}}{1 - \gamma}
+\end{equation}
+and the production function takes the following simple form:
+\begin{equation}
+	f(k) = k^{\alpha}
+\end{equation}
+We find the steady-state value of \(k\) from the capital accumulation equation and allow \(k\) to take values in a range around that value. We solve using value function iteration, assuming that \(k\) only takes values on the grid.
+
+
+\section{Stochastic growth}
+
+The code in \texttt{markovGrowthNoInterp.py} defines a \texttt{Model} class that solves a simple stochastic growth problem identical to the one set out in Section 5.3 (in line with Exercise 5.4) of \citet{adda2003dynamic}:
+\begin{equation}
+	V(A, k) = \max_{k'} \left\{ u(c) + \beta E_{A' | A} V(A', k') \right\}
+\end{equation}
+subject to the capital accumulation equation:
+\begin{equation}
+	k' = Af(k) + (1 - \delta)k - c
+\end{equation}
+where \(A\) is stochastic productivity, \(k\) is capital, \(c\) is consumption, \(n\) is labour supply and primes indicate the next period. We assume CRRA utility:
+\begin{equation}
+	u(c) = \frac{c^{1 - \gamma}}{1 - \gamma}
+\end{equation}
+and the production function takes the following simple form:
+\begin{equation}
+	f(k) = A k^{\alpha}
+\end{equation}
+The code assumes that \(A\) is discrete and its mean value is 1.
+
+\section{Stochastic growth with endogenous labour supply}
+
+The code in \texttt{markovGrowthWithLabourNoInterp.py} defines a \texttt{Model} class that solves and estimates a simple stochastic growth problem with endogenous labour supply identical to the one set out in Sections 5.4 and 5.5 (as suggested in Exercise 5.5) of \citet{adda2003dynamic}:
+\begin{equation}
+	V(A, k) = \max_{k', n} \left\{ u(c, 1-n) + \beta E_{A' | A} V(A', k') \right\}
+\end{equation}
+subject to the capital accumulation equation:
+\begin{equation}
+	k' = Af(k, n) + (1 - \delta)k - c
+\end{equation}
+where \(A\) is stochastic productivity, \(k\) is capital, \(c\) is consumption, \(n\) is labour supply and primes indicate the next period. We assume the following functional form for utility:
+\begin{equation}
+	u(c, n) = \ln(c) - B \frac{n^{1 + \frac{1}{\gamma}}}{1 + \frac{1}{\gamma}}
+\end{equation}
+and the production function is Cobb-Douglas:
+\begin{equation}
+	f(k, n) = k^{\alpha} n^{1 - \alpha}
+\end{equation}
+%
+For simplicity, the code assumes that \(A\) has a discrete distribution and that choices for \(k\) and \(n\) always lie on the grid. Solving for steady state \(k\) is a little more complicated here than in the previous versions of the model. First we assume \(n \in [0.05, 1]\). Then we find the mean value of \(A\) under its long-run steady-state distribution using results for Markov Chains. We then find minimum and maximum values for steady-state \(k\) using the capital accumulation equation. Capital is then assumed to lie in this range with some tolerance either side.
+
+As \citet{adda2003dynamic} point out, the choice for \(n\) is essentially static given \(k'\) because it has no impact on the evolution of the state variables. We follow their suggestion and solve for a return function, \(\sigma(A, k, k')\), that gives utility at the optimised value of \(n\) for each combination of \((A, k, k')\). This allows the functional equation to be rewritten as:
+\begin{equation}
+	V(A, k) = \max_{k'} \left\{ \sigma(A, k, k') + \beta E_{A' | A} V(A', k') \right\}
+\end{equation}
+This has the same structure as the stochastic growth model with fixed labour supply and can be solved similarly. The code solves this problem via value function iteration.
+
+The file \texttt{estimateMarkovGrowthWithLabourNoInterp.py} uses this model code (i) to simulate moments for a given set of parameters and then recover those parameters using a simulated method of moments approach, and (ii) to try to match moments for the US economy using grid search to find some starting parameters and then estimating using simulated method of moments. For the estimation, no weighting matrix is used. The model struggles to match the moments for the US economy.
+
+\bibliographystyle{apalike}
+\bibliography{growth}
+
+\end{document}
+
