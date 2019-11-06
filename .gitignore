@@ -3,5 +3,6 @@
 *.blg
 *.log
 *.out
+*.pdf
 *.synctex.gz
 __pycache__
