@@ -39,6 +39,7 @@ class Model:
         self.cMax = self.WMax
         self.a = 1.5
         self.d = 0.1
+        self.m = 0.0
         self.EV = np.empty((self.Dngp, self.Wngp, self.pngp, self.yngp))
         self.ixD1policy = np.empty((self.Dngp, self.Wngp, self.pngp, self.yngp), dtype=np.int32)
         self.ixW1policy = np.empty((self.Dngp, self.Wngp, self.pngp, self.yngp), dtype=np.int32)
@@ -183,7 +184,7 @@ class Model:
 
     # Quadratic utility
     def quadraticUtil(self, c, D, DNext):
-        return -0.5*((self.cMax - c)**2) - 0.5*self.a*((self.DMax - D)**2) - 0.5*self.d*((DNext - D)**2)
+        return -0.5*((self.cMax - c)**2) - 0.5*self.a*((self.DMax - D)**2) - 0.5*self.d*((DNext - D)**2) - self.m*(self.cMax - c)*(self.DMax - D)
 
 
 

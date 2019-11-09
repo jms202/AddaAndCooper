@@ -1,19 +1,6 @@
-\documentclass[12pt]{article}
+\section{Chapter 7: durable consumption}
 
-\usepackage{amsmath}
-\usepackage{natbib}
-\usepackage{hyperref}
-
-\title{Code to solve durable consumption problems using dynamic programming}
-\author{Jonathan Shaw}
-\date{\today}
-
-\begin{document}
-\maketitle
-
-\section{Introduction}
-
-\section{Mankiw's durable consumption model}
+\subsection{Mankiw's durable consumption model}
 
 \citet{mankiw1982hall} studies durable expenditures when the utility function is separable and quadratic, concluding that durables goods purchases follows an ARMA(1,1) process. We will prove this here.
 
@@ -90,7 +77,7 @@ Combining (\ref{eqn:ed}) and (\ref{eqn:ed2}) to eliminate \(D'\) yields our resu
 %
 This shows that durable purchases follows an ARMA(1,1) process.
 
-\section{Bernanke's durable consumption model with adjustment costs}
+\subsection{Bernanke's durable consumption model with adjustment costs and fixed prices}
 
 \citet{bernanke1985adjustment} adds adjustment costs to the durable consumption model. This is explained in Section 7.2.3 in \citet{adda2003dynamic}. Here we consider a version with fixed prices. The value function is:
 %
@@ -158,8 +145,32 @@ where the \(g_j\) are as follows:
 \end{align}
 %
 
-\bibliographystyle{apalike}
-\bibliography{durableConsumption}
+\subsection{Bernanke's durable consumption model with adjustment costs and variable prices}
 
-\end{document}
+In this subsection, we assume that prices follow an AR(1) process. We also allow for nonseparabilities in the utility function between consumption and durables, \(u_{cD}(c, D, D') \neq 0\). The value function is given by:
+%
+\begin{equation}
+	V(A, D, y, p) = \max_{A', D'} \left\{ u(c, D, D') + \beta EV(A', D', y', p') \right\}
+\end{equation}
+%
+The utility function is given by:
+%
+\begin{equation}
+ u(c, D, D') = -\frac{1}{2}(\overline{c} - c)^2 - \frac{a}{2}(\overline{D} - D)^2  - \frac{d}{2}(D' - D)^2 - m(\overline{c} - c)(\overline{D} - D) \label{eqn:utilnonsep}
+\end{equation}
+%
+The Euler equation for consumption is as above:
+%
+\begin{equation}
+ u_c(c, D, D') = \beta R E \left[u_c(c', D', D'')\right] \\
+\end{equation}
+%
+but given the adjustment costs in the utility function, this translates into:
+%
+\begin{equation}
+	c' + mD' = \frac{\beta R - 1}{\beta R}(\overline{c} + m\overline{D}) + \frac{1}{\beta R}(c + mD) + \varepsilon
+\end{equation}
+%
+The files \texttt{durablesAdjCosts.py} and \texttt{runDurablesAdjCosts.py} simulate data from this model and estimate the Euler equation for consumption, first ignoring the non-separability between consumption and durables and then taking it into account. The coefficient on consumption differs somewhat between the two specifications.
+
 
