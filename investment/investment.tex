@@ -1,0 +1,24 @@
+\section{Chapter 8: investment}
+
+\subsection{Convex adjustment costs}
+
+The value function we consider is the one given in Exercise 8.4 of \citet{adda2003dynamic}:
+%
+\begin{equation}
+	V(A, K) = \max_{K'} \left\{ AK^{\alpha} - \frac{\gamma}{2}\left(\frac{K' - (1 - \delta)K}{K}\right)^2 K - p(K' - (1 - \delta)K) + \beta EV(A', K') \right\}
+\end{equation}
+%
+where \(A\) is productivity, \(K\) is capital and primes indicate the next period.
+
+The files \texttt{investmentAdjCosts.py} and \texttt{runInvestmentAdjCosts.py} solve this model and plot the relationship between investment and average Q, where investment is:
+%
+\begin{equation}
+	i = K' - (1 - \delta)K
+\end{equation}
+%
+and average Q is:
+%
+\begin{equation}
+	\overline{Q} = \frac{V(A, K)}{K}
+\end{equation}
+%
