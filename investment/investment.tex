@@ -22,3 +22,20 @@ and average Q is:
 	\overline{Q} = \frac{V(A, K)}{K}
 \end{equation}
 %
+
+\subsection{Nonconvex machine replacement example}
+
+Here we consider the machine replacement example described on p205-6 of \citet{adda2003dynamic}. The value function is given by:
+%
+\begin{equation}
+	V(A, K) = \max \left\{ V^i(A, K), V^a(A, K) \right\}
+\end{equation}
+%
+where the \(i\) and \(a\) superscripts signify inaction and action respectively (whether or not to purchase a new machine), and other variables are as above. The choice-specific value functions are given by:
+%
+\begin{align}
+ V^i(A, K) &=  AK^{\alpha} + \beta E V(A', (1 - \delta)K) \\
+ V^a(A, K) &=  \lambda AK^{\alpha} - p + \beta E V(A', (1 - \delta))
+\end{align}
+%
+where \(1 - \lambda\) is the cost of shutting down the factory to install the new machine, \(p\) is the purchase price of the new machine and the size of the new machine is normalised to 1.
