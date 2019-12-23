@@ -1,5 +1,5 @@
 import numpy as np
-from investmentAdjCosts import Model
+from investmentConvexAdj import Model
 
 model = Model(Kngp = 50)
 

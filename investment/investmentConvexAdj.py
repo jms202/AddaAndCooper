@@ -191,23 +191,15 @@ class Model:
     def onePeriodProfit(self, A, K, K1):
         return A * (K**self.alpha) - self.adjCost(K, K1) - self.p * (K1 - (1.0 - self.delta) * K)
 
-    # Initial guess for EV
-    def guessSln(self):
-
-        # We already calculated the current return from all combinations of A, k and k1
-        # Just need to integrate over uncertain shock
-        self.EV = self.prob @ self.currReturn[:,:,0]
-
-
     # Initial guess for V
     def guessSln(self):
 
         V = np.empty((self.Angp, self.Kngp))
 
-        # Calculate value function assuming shock is known and capital is kept constant
+        # Calculate value function assuming shock is known and capital is chosen to maximise one-period profit
         for ixA, A in enumerate(self.A):
             for ixK, K in enumerate(self.Kgrid):
-                V[ixA,ixK] = self.onePeriodProfit(A, K, K)
+                V[ixA,ixK] = np.max(self.onePeriodProfit(A, K, self.Kgrid))
 
         # Now integrate over uncertain shock
         self.EV = self.prob @ V
