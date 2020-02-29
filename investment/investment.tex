@@ -1,6 +1,6 @@
 \section{Chapter 8: investment}
 
-\subsection{Convex adjustment costs}
+\subsection{Convex adjustment costs} \label{sub:convex}
 
 The value function we consider is the one given in Exercise 8.4 of \citet{adda2003dynamic}:
 %
@@ -10,7 +10,7 @@ The value function we consider is the one given in Exercise 8.4 of \citet{adda20
 %
 where \(A\) is productivity, \(K\) is capital and primes indicate the next period.
 
-The files \texttt{investmentAdjCosts.py} and \texttt{runInvestmentAdjCosts.py} solve this model and plot the relationship between investment and average Q, where investment is:
+The files \texttt{investmentConvexAdj.py} and \texttt{runInvestmentConvexAdj.py} solve this model and plot the relationship between investment and average Q, where investment is:
 %
 \begin{equation}
 	i = K' - (1 - \delta)K
@@ -39,3 +39,22 @@ where the \(i\) and \(a\) superscripts signify inaction and action respectively 
 \end{align}
 %
 where \(1 - \lambda\) is the cost of shutting down the factory to install the new machine, \(p\) is the purchase price of the new machine and the size of the new machine is normalised to 1.
+
+\subsection{Comparing convex and nonconvex adjustment cost models}
+
+The code \texttt{investmentNonConvexAdj.py} solves and simulates an investment model with nonconvex adjustment costs as described in Section 8.5.1 of \citet{adda2003dynamic} but assuming that the price of investment is constant. The value function is given by:
+%
+\begin{equation}
+	V(A, K) = \max \left\{ V^i(A, K), V^a(A, K) \right\}
+\end{equation}
+%
+where the \(i\) and \(a\) superscripts signify inaction and action respectively (whether or not to undertake any investment), and other variables are as above. The choice-specific value functions are given by:
+%
+\begin{align}
+ V^i(A, K) &=  AK^{\alpha} + \beta E V(A', (1 - \delta)K) \\
+ V^a(A, K) &=  \lambda AK^{\alpha} - FK - p(K' - (1 - \delta)K) + \beta E V(A', K')
+\end{align}
+%
+where \(p\) is the purchase price of new capital. As Adda and Cooper emphasise, there are two costs of investment here. First, \(1 - \lambda\) is a loss of profit flow that can be interpreted as the cost of shutting down the factory to install the new capital. Second, the term \(FK\) is a fixed cost that is meant to capture the possibility that there are some scale aspects to new investment.
+
+Exercise 8.5 asks the reader to assess how well a model with quadratic adjustment costs can approximate the aggregate time series for investment created by a model with nonconvex adjustment costs. This is what the file \texttt{runInvestmentConvexVsNon.py} does. It uses the code described in Section \ref{sub:convex} for the model with quadratic adjustment costs and compares simulated time series for aggregate investment across the two models.
