@@ -1,0 +1,23 @@
+\section{Chapter 8: dynamics of employment adjustment}
+
+\subsection{Convex adjustment costs} \label{sub:demandconvex}
+
+The value function we consider is equation (9.9) in \citet{adda2003dynamic}:
+%
+\begin{equation}
+	V(A, e_{-1}) = \max_{h,e} \left\{ R(A,e,h) - \omega(e,h) - C(e,e_{-1}) + \beta EV(A', e) \right\}
+\end{equation}
+%
+where \(R(\cdot)\) is revenue, a function of productivity, \(A\), number of employees, \(e\) and hours worked, \(h\). \(\omega(\cdot\) is the cost of hiring \(e\) workers to work \(h\) hours. \(C(\cdot)\) is the cost of adjusting the number of workers from \(e_{-1}\) in the previous period to \(e\) this period.
+
+The files \texttt{labourDemand.py} and \texttt{estimateLabourDemand.py} solve and estimate parameters for this model in line with parts (1) and (3) of Exercise 9.2.
+
+The functional forms used are as suggested:
+%
+\begin{align}
+ R(A,e,h) &=  A(eh) \\
+ \omega(e,h) &= we\left[w_0 + h + w_1(h - 40) + w_2(h - 40)^2\right] \\
+ C(e,e_{-1}) &= \frac{\eta}{2}\frac{(e - e_{-1})^2}{e_{-1}}
+\end{align}
+%
+With the estimation routine, an important thing to note again is that---because of the simulated, discontinuous objective---the minimisation algorthim struggles to find the true minimum.
