@@ -19,10 +19,10 @@ targetMoments = solveSimMoments(truth, model, sims)
 
 sims = model.drawShocks()
 
-guess = [0.1, 1.5]
-initial_simplex = np.array([[0.1, 1.5],
-                            [0.15, 1.5],
-                            [0.1, 2.5]])
+guess = [0.05, 0.75]
+initial_simplex = np.array([[0.05, 0.75],
+                            [0.09, 0.75],
+                            [0.05, 1.0]])
 res = minimize(objective, x0=np.array(guess), args=(targetMoments, model, sims), method='Nelder-Mead', options={'initial_simplex':initial_simplex}, callback=callback)
 
 finalMoments = solveSimMoments(res.x, model, sims)
