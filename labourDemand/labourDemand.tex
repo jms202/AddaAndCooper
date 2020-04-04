@@ -2,7 +2,7 @@
 
 \subsection{Convex adjustment costs} \label{sub:demandconvex}
 
-The value function we consider is equation (9.9) in \citet{adda2003dynamic}:
+This section provides solutions to parts (1) and (3) of Exercise 9.2 on p224 \citet{adda2003dynamic} of The value function we consider is equation (9.9):
 %
 \begin{equation}
 	V(A, e_{-1}) = \max_{h,e} \left\{ R(A,e,h) - \omega(e,h) - C(e,e_{-1}) + \beta EV(A', e) \right\}
@@ -21,3 +21,16 @@ The functional forms used are as suggested:
 \end{align}
 %
 With the estimation routine, an important thing to note again is that---because of the simulated, discontinuous objective---the minimisation algorthim struggles to find the true minimum.
+
+\subsection{Piecewise linear adjustment costs} \label{sub:demandpiecewise}
+
+This section considers Exercise 9.3 on p225 of \citet{adda2003dynamic}. It is an identical problem to the case with convex adjustment costs above except for the specification of the adjustment costs function.
+%
+\begin{equation}
+  C(e,e_{-1})=\begin{cases}
+    \gamma^{+}\Delta e & \text{if $\Delta e > 0$}\\
+    \gamma^{-}\Delta e & \text{otherwise}
+  \end{cases}
+\end{equation}
+%
+The file \texttt{labourDemandPiecewise.py} solves and estimates parameters for this model.
