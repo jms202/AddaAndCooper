@@ -22,7 +22,7 @@ The functional forms used are as suggested:
 %
 With the estimation routine, an important thing to note again is that---because of the simulated, discontinuous objective---the minimisation algorthim struggles to find the true minimum.
 
-\subsection{Piecewise linear adjustment costs} \label{sub:demandpiecewise}
+\subsection{Piecewise linear adjustment costs}
 
 This section considers Exercise 9.3 on p225 of \citet{adda2003dynamic}. It is an identical problem to the case with convex adjustment costs above except for the specification of the adjustment costs function.
 %
@@ -34,3 +34,20 @@ This section considers Exercise 9.3 on p225 of \citet{adda2003dynamic}. It is an
 \end{equation}
 %
 The file \texttt{labourDemandPiecewise.py} solves and estimates parameters for this model.
+
+\subsection{Nonconvex adjustment costs}
+
+The code \texttt{labourDemandNonConvex.py} solves and simulates an investment model with nonconvex adjustment costs as described in Section 9.4.2 and Exercise 9.4 of \citet{adda2003dynamic}. The value function is given by:
+%
+\begin{equation}
+	V(A, e_{-1}) = \max \left\{ V^a(A, e_{-1}), V^n(A, e_{-1}) \right\}
+\end{equation}
+%
+where the \(a\) and \(n\) superscripts signify adjusting employment and not adjusting respectively, and other variables are as above. The choice-specific value functions are given by:
+%
+\begin{align}
+	V^a(A, e_{-1}) &= \max_{h,e} \left\{ R(A,e,h) - \omega(e,h) - F + \beta EV(A', e) \right\} \\
+	V^n(A, e_{-1}) &= \max_{h} \left\{ R(A,e_{-1},h) - \omega(e_{-1},h) + \beta EV(A', e_{-1}) \right\}
+\end{align}
+%
+where \(F\) is the fixed cost of adjusting the employment input.
