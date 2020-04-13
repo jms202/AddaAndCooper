@@ -1,0 +1,26 @@
+\section{Chapter 10: future developments}
+
+\subsection{Optimal inventory policy}
+
+The code \texttt{optimalInventory.py} solves and simulates an optimal inventory problem as described in Section 10.3.1 and Exercise 10.1 of \citet{adda2003dynamic}. The value function is given by (10.7):
+%
+\begin{equation}
+	V(s, I) = \max_{y} \left\{ r(s) - c(y) + \beta EV(s', I') \right\}
+\end{equation}
+%
+
+where \(r(\cdot)\) is revenue, a function of sales, \(s\), and \(c(\cdot)\) is the cost of producing \(y\) units of output, \(y\). \(I\) is the inventory held by the firm. The inventory evolves according to the following transition equation:
+%
+\begin{equation}
+	I' = R(I + y - s)
+\end{equation}
+%
+The functional forms used are:
+%
+\begin{align}
+ r(s) &=  ps \\
+ c(y) &= \eta y^{\gamma}
+\end{align}
+%
+where \(p\) is the price and \(\eta\) is a scaling parameter.
+
