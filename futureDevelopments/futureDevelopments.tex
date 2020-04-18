@@ -2,7 +2,7 @@
 
 \subsection{Optimal inventory policy}
 
-The code \texttt{optimalInventory.py} solves and simulates an optimal inventory problem as described in Section 10.3.1 and Exercise 10.1 of \citet{adda2003dynamic}. The value function is given by (10.7):
+The code \texttt{optimalInventory.py} solves the optimal inventory problem as described in Section 10.3.1 and Exercise 10.1 of \citet{adda2003dynamic}. The value function is given by (10.7):
 %
 \begin{equation}
 	V(s, I) = \max_{y} \left\{ r(s) - c(y) + \beta EV(s', I') \right\}
@@ -24,3 +24,15 @@ The functional forms used are:
 %
 where \(p\) is the price and \(\eta\) is a scaling parameter.
 
+The code \texttt{optimalInventoryShocks.py} solves the optimal inventory problem as described in Section 10.3.1 and Exercise 10.2 of \citet{adda2003dynamic}. The value function is given by (10.10):
+%
+\begin{equation}
+	V(s, I, A) = \max_{y} \left\{ r(s) - c(y, A) + \beta EV(s', I', A') \right\}
+\end{equation}
+%
+where \(A\) is a cost shock modelled as an AR(1) process and all other variables are as above. The functional form of the cost function is:
+%
+\begin{equation}
+ c(y, A) = \eta A y^{\gamma}
+\end{equation}
+%
