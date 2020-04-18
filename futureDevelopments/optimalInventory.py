@@ -40,7 +40,7 @@ class Model:
         self.yMin = 0.01
 
 
-    # Function to calculate grid on I
+    # Function to suggest eta
     def setEta(self):
         if all([val for val in self.etaReady.values()]):
             self.eta = self.suggestEta()
