@@ -36,3 +36,13 @@ where \(A\) is a cost shock modelled as an AR(1) process and all other variables
  c(y, A) = \eta A y^{\gamma}
 \end{equation}
 %
+
+\subsection{Job search}
+
+The code \texttt{search.py} solves the McCall job search problem as described in Section 10.6 and Exercise 10.4 of \citet{adda2003dynamic}. The value function is given by (10.25):
+%
+\begin{equation}
+	V(w) = \max \left\{ \frac{u(w)}{1-\beta}, u(b) + \beta EV(w') \right\}
+\end{equation}
+%
+where \(w\) is the wage offer and \(b\) is unemployment insurance. \(EV(w')\) is a constant because there is assumed to be no serial correlation in wage offers.
