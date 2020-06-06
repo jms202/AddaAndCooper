@@ -16,6 +16,8 @@ where \(W\) is assets, \(c\) is consumption, \(y\) is non-stochastic (constant) 
 \end{equation}
 Examples of how to use the code are given in \texttt{eatCertainCake.py}. The solution is found using value function iteration. Depending on the options specified, this is achieved either by solving the Euler equation or by maximising the value function directly. Interpolation is used for values of assets that are off the assets grid.
 
+The code in \texttt{certainCakeChebyshev.py} solves the same problem using Chebyshev function approximation.
+
 \subsection{Continuous non-stochastic problem with no interpolation}
 
 \texttt{certainCakeNoInterp.py} defines a \texttt{Model} class that solves an identical problem to the one described in the previous section. The only difference is that it does not use interpolation for asset values off the grid. The reason for doing this is to allow for an implementation of policy function iteration, discussed in Section 3.2.2 of \citet{adda2003dynamic}. Policy function iteration involves solving a set of linear equations, and---as far as I can tell---this is only possible on the grid.
