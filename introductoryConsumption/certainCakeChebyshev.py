@@ -1,7 +1,4 @@
-# Next step: minimise_scalar is complaining that the bounds are not scalars - look for a different minimisation routine or loop across values of W
-
-
-# Script to solve a simple continuous non-stochastic consumption-savings problem
+# Script to solve a simple continuous non-stochastic consumption-savings problem using Chebyshev function interpolation
 
 # Copyright (c) 2017, 2018 Jonathan Shaw
 
@@ -24,7 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.optimize import minimize_scalar
-from scipy.optimize import brentq
+from numpy.polynomial.chebyshev import Chebyshev as T
 import sys
 
 def set_trace():
@@ -33,14 +30,13 @@ def set_trace():
 
 class Model:
 
-    def __init__(self, gamma=1.5, beta=0.97, R=1.025, y=5.0, WMax=100.0, order=8, interpMethod='linear'):
+    def __init__(self, gamma=1.5, beta=0.97, R=1.025, y=5.0, WMax=100.0, order=8):
 
         self.gamma = gamma
         self.beta = beta
         self.R = R
         self.y = y
         self.WMax = WMax
-        self.interpMethod = interpMethod                # interpMethod should be one of 'linear' or 'cubic'
         self.tol = 0.0001
         self.cMin = 0.000001
         self.order = order
@@ -51,15 +47,6 @@ class Model:
     def WMin(self):
         # W = c - y + (c - y)/R + (c - y)/(R**2) + ...
         return max(0.0, self.R*(self.cMin - self.y)/(self.R - 1.0))
-
-
-    # Getter function for interpFillHow
-    @property
-    def interpFillHow(self):
-        if (self.interpMethod == 'linear'):
-            return 'extrapolate'
-        else:
-            return (self.V[0], self.V[-1])
 
 
     # CRRA utility
@@ -101,13 +88,13 @@ class Model:
 
     # Initial guess for V
     def guessSln(self):
-        self.V = np.polynomial.chebyshev.Chebyshev.interpolate(lambda x : self.u(x + self.y), deg=self.order, domain=[self.WMin, self.WMax])
+        self.V = T.interpolate(lambda W : self.u(W + self.y), deg=self.order, domain=[self.WMin, self.WMax])
 
 
 
     # Find next iteration
     def nextIter(self):
-        VNext = np.polynomial.chebyshev.Chebyshev.interpolate(lambda W : -self.negValue(W), deg=self.order, domain=[self.WMin, self.WMax])
+        VNext = T.interpolate(lambda W : -self.negValue(W), deg=self.order, domain=[self.WMin, self.WMax])
         return VNext
 
             
@@ -123,7 +110,7 @@ class Model:
 
     # Find policy function using solution
     def findPolicy(self):
-        self.policy = np.polynomial.chebyshev.Chebyshev.interpolate(lambda W : W + self.y - (self.findOptW1(W)/self.R), deg=self.order, domain=[self.WMin, self.WMax])
+        self.policy = T.interpolate(lambda W : W + self.y - (self.findOptW1(W)/self.R), deg=self.order, domain=[self.WMin, self.WMax])
 
 
     # Solution
