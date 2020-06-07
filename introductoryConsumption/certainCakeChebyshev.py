@@ -1,6 +1,6 @@
 # Script to solve a simple continuous non-stochastic consumption-savings problem using Chebyshev function interpolation
 
-# Copyright (c) 2017, 2018 Jonathan Shaw
+# Copyright (c) 2020 Jonathan Shaw
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
