@@ -73,6 +73,9 @@ and where \(y \in \{y_L, y_H\}\) and the transition matrix is given by
 \end{equation}
 where \(\pi_{ij} = \text{Prob}(y' = y_i | y = y_j)\).
 
+The code in \texttt{markovCakeSpline.py} solves the same problem but using spline interpolation to approximate the value function and expected marginal utility. This code demonstrates some of the challenges in using spline approximation: monotonicity and convexity are not maintained so there are problems with the solution, particularly when using the Euler equation approach to solve for the value function. Of course, there may may be an error in the code but I haven't been able to track one down!
+
+
 \subsection{Discrete IID stochastic problem}
 
 In \texttt{iidDiscreteCake.py}, the consumption decision is discrete: either you consume the cake or you don't. It is therefore a form of optimal stopping problem. It is similar to the setup in Section 3.3 of \citet{adda2003dynamic} except that shocks are IID rather than Markovian. Note there is no income and that that uncertainty now is over tastes. Since tastes are IID, we are back to having one state variable: current wealth.
